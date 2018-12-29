@@ -8,6 +8,7 @@ module.exports = server => {
   server.post("/api/register", register);
   server.post("/api/login", login);
   server.get("/api/userInfo", getUserInfo);
+  server.post("/api/verify", authenticate, verify);
 };
 
 function register(req, res) {
@@ -36,11 +37,17 @@ function login(req, res) {
     .then(user => {
       if (user && bcrypt.compareSync(creds.password, user.password)) {
         // res.status(201).json({ token: getToken(user) });
-        res.status(201).json({ sdf: user, creds });
+        res.status(201).json({ token: getToken(user) });
       } else {
         res.status(401).json({ message: "Login failed" });
       }
     });
+}
+
+function verify(req, res) {
+  // test to verify by default
+  // res.status(201).json({ verified: true });
+  res.status(201).json({ verified: true });
 }
 
 function getUserInfo(req, res) {
