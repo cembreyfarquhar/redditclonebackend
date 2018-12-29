@@ -1,8 +1,10 @@
 const bcrypt = require("bcryptjs");
+const knex = require("knex");
 const db = require("../database/dbConfig.js");
 
 module.exports = server => {
   server.post("/api/register", register);
+  server.get("/api/userInfo", getUserInfo);
 };
 
 function register(req, res) {
@@ -17,5 +19,17 @@ function register(req, res) {
     .then(ids => {
       res.status(201).json(ids);
     })
-    .catch(err => json(err));
+    .catch(err => {
+      res.status(500).json(err);
+    });
+}
+
+function getUserInfo(req, res) {
+  const id = req.body;
+
+  db("users")
+    .where(id, id)
+    .then(stuff => {
+      res.status(201).json(stuff);
+    });
 }
