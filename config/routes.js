@@ -2,8 +2,11 @@ const bcrypt = require("bcryptjs");
 const knex = require("knex");
 const db = require("../database/dbConfig.js");
 
+const { authenticate, getToken } = require("./middewares");
+
 module.exports = server => {
   server.post("/api/register", register);
+  server.post("/api/login", login);
   server.get("/api/userInfo", getUserInfo);
 };
 
@@ -21,6 +24,22 @@ function register(req, res) {
     })
     .catch(err => {
       res.status(500).json(err);
+    });
+}
+
+function login(req, res) {
+  const creds = req.body;
+
+  db("users")
+    .where({ username: creds.username })
+    .first()
+    .then(user => {
+      if (user && bcrypt.compareSync(creds.password, user.password)) {
+        // res.status(201).json({ token: getToken(user) });
+        res.status(201).json({ sdf: user, creds });
+      } else {
+        res.status(401).json({ message: "Login failed" });
+      }
     });
 }
 
