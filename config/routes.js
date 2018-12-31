@@ -9,8 +9,12 @@ module.exports = server => {
   server.post("/api/login", login);
   server.get("/api/userInfo", getUserInfo);
   server.post("/api/verify", authenticate, verify);
+  server.post("/api/subs/create", createSubreddit);
 };
 
+// U S E R    D A T A B A S E
+
+// register a new user
 function register(req, res) {
   const creds = req.body;
 
@@ -28,6 +32,7 @@ function register(req, res) {
     });
 }
 
+// login with existing account
 function login(req, res) {
   const creds = req.body;
 
@@ -44,10 +49,12 @@ function login(req, res) {
     });
 }
 
+// test function, not currently in use
 function verify(req, res) {
   res.status(201).json({ verified: true });
 }
 
+// gets user object from db, is used to store user in state
 function getUserInfo(req, res) {
   const id = req.body;
 
@@ -55,5 +62,20 @@ function getUserInfo(req, res) {
     .where(id, id)
     .then(stuff => {
       res.status(201).json(stuff);
+    });
+}
+
+// S U B R E D D I T       D A T A B A S E
+
+function createSubreddit(req, res) {
+  const creds = req.body;
+
+  db("subreddits")
+    .insert(creds)
+    .then(ids => {
+      res.status(201).json(ids);
+    })
+    .catch(err => {
+      res.status(500).json(err);
     });
 }
