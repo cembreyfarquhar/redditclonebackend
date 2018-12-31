@@ -45,8 +45,6 @@ function login(req, res) {
 }
 
 function verify(req, res) {
-  // test to verify by default
-  // res.status(201).json({ verified: true });
   res.status(201).json({ verified: true });
 }
 
